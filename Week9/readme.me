@@ -1,0 +1,111 @@
+# Week 10: Integrating OpenWeatherMap API with React
+
+## Overview
+
+This week, we will connect our React apps to the OpenWeatherMap API. You’ll learn how to get an API key, make requests to the weather API, and display the data in your app.
+
+## Prerequisites
+
+- **Sign Up for an API Key**: Register at [OpenWeatherMap](https://home.openweathermap.org/users/sign_up) to get an API key. You'll need this to access the weather data.
+- **API Key Access**: After registering, visit the [API Keys Page](https://home.openweathermap.org/api_keys) to get your key.
+
+## 1. Setting Up Your OpenWeatherMap Account
+
+1. Go to the OpenWeatherMap [registration page](https://home.openweathermap.org/users/sign_up) and sign up.
+2. Confirm your account via email.
+3. Log in and navigate to the [API Keys page](https://home.openweathermap.org/api_keys).
+4. Copy your API key—keep it safe, as it is linked to your usage.
+
+## 2. Fetching Weather Data in React
+
+Once you have your API key, you can start making requests to OpenWeatherMap.
+
+### Example Endpoint
+
+For current weather by city:
+
+```
+https://api.openweathermap.org/data/2.5/weather?q={city name}&appid={API key}
+```
+
+### Basic Implementation Steps
+
+1. Set up a React component to take user input (e.g., city name).
+2. Use `fetch` or `axios` to request weather data from the API.
+3. Display the weather data in a user-friendly format.
+
+### Example Code
+
+```javascript
+import React, { useState } from 'react';
+
+function WeatherApp() {
+  const [city, setCity] = useState('');
+  const [weather, setWeather] = useState(null);
+
+  const fetchWeather = (cityName) => {
+    const apiKey = 'YOUR_API_KEY'; // Replace with your API key
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}`;
+
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => setWeather(data))
+      .catch((error) => {
+        console.error('Error fetching weather data:', error);
+        setWeather(null);
+      });
+  };
+
+  return (
+    <div>
+      <h1>Weather App</h1>
+      <input
+        type="text"
+        value={city}
+        onChange={(e) => setCity(e.target.value)}
+        placeholder="Enter city name"
+      />
+      <button onClick={() => fetchWeather(city)}>Get Weather</button>
+
+      {weather && (
+        <div>
+          <h2>{weather.name}</h2>
+          <p>Temperature: {Math.round(weather.main.temp - 273.15)}°C</p>
+          <p>Weather: {weather.weather[0].description}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+export default WeatherApp;
+```
+
+### Key Concepts
+
+1. **State Setup**: Use `useState` for city input and weather data.
+2. **API Request**: The `fetchWeather` function uses `fetch` and `.then()` for handling API calls.
+3. **Error Handling**: Errors are logged in the console, but validation errors (like `response.ok`) are ignored for simplicity.
+
+## 3. Using `useEffect` for Auto Fetch
+
+To automatically fetch data when the component mounts or when the city name changes:
+
+```javascript
+useEffect(() => {
+  if (city) {
+    fetchWeather(city);
+  }
+}, [city]);
+```
+
+## Assignment
+
+1. Register and get your OpenWeatherMap API key.
+2. Build a simple weather app displaying the city, temperature, and weather description.
+3. **Bonus**: Try out other API endpoints, like the 5-day forecast.
+
+---
+
+By the end of this week, you will understand how to integrate APIs into your React projects and work with asynchronous data using hooks like `useEffect`.
+
